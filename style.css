@@ -40,3 +40,7 @@ body {
   flex: 1;
   border: 1px solid grey;
 }
+
+.unit:hover {
+  background-color: #f5ca82;
+}
