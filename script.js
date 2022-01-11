@@ -4,6 +4,8 @@ const gameBoard = (() => {
                     [null, null, null],
                     [null, null, null]];
 
+    // TODO: Need to implement tie checking feature
+    // TODO: Need to implement reset button
     const checkBoard = (marker) => {
         const tBoard = board[0].map((_, colIndex) => board.map(row => row[colIndex]));
         const leftDiagonal = [board[0][0], board[1][1], board[2][2]];
@@ -77,9 +79,7 @@ const displayController = (() => {
             gameBoard.board[row][col] = currentPlayer.marker;
             e.target.innerHTML = currentPlayer.marker;
             gameBoard.checkBoard(currentPlayer.marker);
-            // Test Statement
-            //console.log(gameBoard.board);
-
+        
             setTurn(secondPlayer)
             secondPlayer = firstPlayer;
             firstPlayer = currentPlayer;
