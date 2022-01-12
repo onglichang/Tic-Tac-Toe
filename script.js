@@ -1,18 +1,21 @@
 //Gameboard object - module
 const gameBoard = (() => {
-    const board = [[null, null, null],
+    let board = [[null, null, null],
                     [null, null, null],
                     [null, null, null]];
     
     let gameWon = false;
 
-    const getGameWon = () => gameWon;
+    const getBoard = () => board;
 
-    // TODO: Need to implement reset button
+    const setBoard = (x, y, marker) => {
+        board[x][y] = marker;
+    } 
+
     const checkBoard = (marker) => {
-        const tBoard = board[0].map((_, colIndex) => board.map(row => row[colIndex]));
-        const leftDiagonal = [board[0][0], board[1][1], board[2][2]];
-        const rightDiagonal = [board[0][2], board[1][1], board[2][0]];
+        let tBoard = board[0].map((_, colIndex) => board.map(row => row[colIndex]));
+        let leftDiagonal = [board[0][0], board[1][1], board[2][2]];
+        let rightDiagonal = [board[0][2], board[1][1], board[2][0]];
         //Check diagonal
         if (leftDiagonal.every((val) => val === leftDiagonal[0] && val != null)) {
             gameWon = true;
@@ -21,9 +24,9 @@ const gameBoard = (() => {
             gameWon = true;
             return gameWon;
         } else {
-            for (let i = 0; i < 3; i++) {
-                const row = board[i];
-                const tRow = tBoard[i];
+            for (let i = 0; i < 3; i++) { 333
+                let row = board[i];
+                let tRow = tBoard[i];
                 //Check horizontal 
                 if (row.every((val) => val === row[0] && val != null)) {
                     gameWon = true;
@@ -51,9 +54,18 @@ const gameBoard = (() => {
                 return true;
             }
         }
+        return false;
     }
 
-    return {board, checkBoard, checkTie, getGameWon};
+    const restartGame = () => {
+        
+        gameWon = false;
+        board = [[null, null, null],
+        [null, null, null],
+        [null, null, null]];
+    }
+
+    return {getBoard, setBoard, checkBoard, checkTie, restartGame};
 })();
 
 //Players - factories 
@@ -103,7 +115,7 @@ const displayController = (() => {
                 const position = e.target.getAttribute("position");
                 const row = position.charAt(0);
                 const col = position.charAt(1);
-                gameBoard.board[row][col] = currentPlayer.marker;
+                gameBoard.setBoard(row, col, currentPlayer.marker);
                 e.target.innerHTML = currentPlayer.marker;
                 turnCount += 1;
 
@@ -127,6 +139,19 @@ const displayController = (() => {
         }
         
     } 
+
+    const restartDisplay = () => {
+        firstPlayer = Player('X');
+        secondPlayer = Player('O');
+        turnCount = 0;
+        gameWon = false;
+        gameTied = false;
+        document.getElementById("board-container").innerHTML = '';
+        gameBoard.restartGame();
+        setUpGame();
+    }
+
+    document.getElementById("restart-btn").addEventListener('click', restartDisplay);
 
     return {
         setUpGame
