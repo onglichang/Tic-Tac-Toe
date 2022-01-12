@@ -3,6 +3,7 @@ const gameBoard = (() => {
     const board = [[null, null, null],
                     [null, null, null],
                     [null, null, null]];
+    let gameWon = false;
 
     // TODO: Need to implement tie checking feature
     // TODO: Need to implement reset button
@@ -13,8 +14,10 @@ const gameBoard = (() => {
         //Check diagonal
         if (leftDiagonal.every((val) => val === leftDiagonal[0] && val != null)) {
             alert(`Player ${marker} won!`);
+            gameWon = true;
         } else if (rightDiagonal.every((val) => val === rightDiagonal[0] && val != null)) {
             alert(`Player ${marker} won!`);
+            gameWon = true;
         } else {
             for (let i = 0; i < 3; i++) {
                 const row = board[i];
@@ -22,15 +25,32 @@ const gameBoard = (() => {
                 //Check horizontal 
                 if (row.every((val) => val === row[0] && val != null)) {
                     alert(`Player ${marker} won!`);
+                    gameWon = true;
                 //Check vertical
                 } else if (tRow.every((val) => val === tRow[0] && val != null)) {
                     alert(`Player ${marker} won!`);
+                    gameWon = true;
                 } 
             }
         }
-
     }
-    return {board, checkBoard};
+
+    const checkTie = () => {
+        if (!gameWon) {
+            let counter = 0;
+            for (let i=0; i < 3; i++) {
+                const row = board[i];
+                if (row.every((val) => val != null)) {
+                    counter += 1
+                }
+            }
+            if (counter == 3) {
+                alert("tie!");
+            }
+        }
+    }
+
+    return {board, checkBoard, checkTie};
 })();
 
 //Players - factories 
@@ -43,6 +63,7 @@ const displayController = (() => {
     let firstPlayer = Player('X');
     let secondPlayer = Player('O');
     let currentPlayer;
+    let turnCount = 0;
 
     const setUpGame = () => {
         // Set Up Game Board
@@ -78,7 +99,14 @@ const displayController = (() => {
             const col = position.charAt(1);
             gameBoard.board[row][col] = currentPlayer.marker;
             e.target.innerHTML = currentPlayer.marker;
-            gameBoard.checkBoard(currentPlayer.marker);
+            turnCount += 1;
+
+            if (turnCount == 9) {
+                gameBoard.checkBoard(currentPlayer.marker);
+                gameBoard.checkTie();
+            } else {
+                gameBoard.checkBoard(currentPlayer.marker);
+            }
         
             setTurn(secondPlayer)
             secondPlayer = firstPlayer;
